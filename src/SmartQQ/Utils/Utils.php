@@ -6,7 +6,7 @@
  * Time: 下午11:24
  */
 
-namespace SmartQQ;
+namespace SmartQQ\Utils;
 
 
 class Utils

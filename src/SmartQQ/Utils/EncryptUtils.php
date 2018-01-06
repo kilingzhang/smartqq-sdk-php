@@ -6,10 +6,10 @@
  * Time: 下午8:28
  */
 
-namespace SmartQQ;
+namespace SmartQQ\Utils;
 
 
-class Encrypt
+class EncryptUtils
 {
 
     public static function hash33($t)
