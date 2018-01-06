@@ -10,7 +10,7 @@ namespace kilingzhang\SmartQQ\Utils;
 
 
 
-use SmartQQ\Exception\InvalidArgumentException;
+use kilingzhang\SmartQQ\Exception\InvalidArgumentException;
 
 class MessageUtils
 {

@@ -40,7 +40,7 @@ class QQClient
     private $psessionid;
 
 
-    public function __construct(ClientToken $clientToken = null)
+    public function __construct($clientToken = null)
     {
         if($clientToken != null){
             $this->setClienToken($clientToken);
@@ -99,7 +99,7 @@ class QQClient
         return false;
     }
 
-    public function Login(): ClientToken{
+    public function Login(){
         $response = $this->client->get($this->checkSigUrl,[
             'allow_redirects' => false
         ]);
@@ -115,7 +115,7 @@ class QQClient
     }
 
 
-    public function getCookies(ResponseInterface $response)
+    public function getCookies($response)
     {
         $cookie = $response->getHeader('set-cookie');
         foreach ($cookie as $value) {
@@ -125,7 +125,7 @@ class QQClient
         return $cookies;
     }
 
-    public function getClienToken(): ClientToken{
+    public function getClienToken(){
         $clienToken = new ClientToken();
         $clienToken->setUin($this->uin);
         $clienToken->setCheckSigUrl($this->checkSigUrl);
@@ -139,7 +139,7 @@ class QQClient
         return $clienToken;
     }
 
-    public function setClienToken(ClientToken $clientToken){
+    public function setClienToken($clientToken){
         $this->uin = $clientToken->getUin();
         $this->checkSigUrl = $clientToken->getCheckSigUrl();
         $this->ptqrtoken = $clientToken->getPtqrtoken();
