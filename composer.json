@@ -11,7 +11,7 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": ">=5.5.0",
+    "php": ">=7.0.0",
     "guzzlehttp/guzzle": "~6.0",
     "phpunit/phpunit": "5.5.*"
   },
