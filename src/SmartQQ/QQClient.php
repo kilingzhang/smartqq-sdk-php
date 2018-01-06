@@ -6,14 +6,14 @@
  * Time: 下午12:49
  */
 
-namespace SmartQQ;
+namespace kilingzhang\SmartQQ;
 
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Client;
-use SmartQQ\Entity\ClientToken;
-use SmartQQ\Utils\EncryptUtils;
-use SmartQQ\Utils\MessageUtils;
-use SmartQQ\Utils\Utils;
+use kilingzhang\SmartQQ\Entity\ClientToken;
+use kilingzhang\SmartQQ\Utils\EncryptUtils;
+use kilingzhang\SmartQQ\Utils\MessageUtils;
+use kilingzhang\SmartQQ\Utils\Utils;
 
 
 class QQClient

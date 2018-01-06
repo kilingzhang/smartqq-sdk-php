@@ -6,7 +6,7 @@
  * Time: 下午11:22
  */
 
-namespace SmartQQ\Utils;
+namespace kilingzhang\SmartQQ\Utils;
 
 
 

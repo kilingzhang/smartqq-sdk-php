@@ -6,7 +6,7 @@
  * Time: 下午5:43
  */
 
-namespace SmartQQ\Entity;
+namespace kilingzhang\SmartQQ\Entity;
 
 
 class ClientToken

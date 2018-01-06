@@ -6,7 +6,7 @@
  * Time: 下午8:28
  */
 
-namespace SmartQQ\Utils;
+namespace kilingzhang\SmartQQ\Utils;
 
 
 class EncryptUtils

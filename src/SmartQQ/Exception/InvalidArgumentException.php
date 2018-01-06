@@ -1,6 +1,6 @@
 <?php
 
-namespace SmartQQ\Exception;
+namespace kilingzhang\SmartQQ\Exception;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {
