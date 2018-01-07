@@ -8,6 +8,8 @@
 
 namespace kilingzhang\SmartQQ;
 
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Cookie\SetCookie;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Client;
 use kilingzhang\SmartQQ\Entity\ClientToken;
@@ -35,87 +37,57 @@ class QQClient
     private $ptqrtoken;
     private $uin;
     private $skey;
+    private $bkn;
     private $clientid = 53999199;
     private $vfwebqq;
+    private $ptwebqq;
     private $psessionid;
+    private $hash;
+    private $supertoken;
+    private $superkey;
 
+    private $jarArray;
+    private $jar;
 
     public function __construct(ClientToken $clientToken = null)
     {
-        if($clientToken != null){
+        if ($clientToken != null) {
             $this->setClienToken($clientToken);
         }
 
         $this->client = new Client(['cookies' => true]);
+
         $this->qrcodePath = './qrcode.png';
 
     }
 
-    public function setQRCodePath($path = './qrcode.png')
+    public  function CookieJartoArray()
     {
-        $this->qrcodePath = $path;
+        $cookieJar = $this->client->getConfig('cookies');
+        return $cookieJar->toArray();
     }
 
-    public function getQRCodePath()
+    public static function ArraytoCookieJar(array $cookies)
     {
-        return $this->qrcodePath;
-    }
-
-    public function refreshQRCode()
-    {
-        $response = $this->client->get(URL::qrcodeURL, [
-            't' => time()
-        ]);
-        $qrcode = $response->getBody();
-        $cookies = $this->getCookies($response);
-        $this->ptqrtoken = EncryptUtils::hash33($cookies['qrsig']);
-        return file_put_contents($this->qrcodePath, $qrcode);
-    }
-
-
-    public function verifyQrCodeStatus(){
-        $response = $this->client->get(URL::ptqrloginURL . "&ptqrtoken={$this->ptqrtoken}&action=0-0-" . time());
-        $ptuiCB = MessageUtils::ptuiCBToArray($response->getBody());
-        $code = $ptuiCB['code'];
-        if($code == self::OK_STATUS){
-            $this->checkSigUrl = $ptuiCB['link'];
+        $jar = new CookieJar();
+        foreach ($cookies as $value) {
+            $cookie = new SetCookie();
+            $cookie->setName($value['Name']);
+            $cookie->setValue($value['Value']);
+            $cookie->setDomain($value['Domain']);
+            $cookie->setExpires($value['Expires']);
+            $cookie->setPath($value['Path']);
+            $jar->setCookie($cookie);
         }
-        return $code;
+        return $jar;
     }
 
-
-
-    public function QRLogin()
-    {
-        set_time_limit(0);
-        while (true){
-            $code = $this->verifyQrCodeStatus();
-            if($code == self::OK_STATUS){
-                return true;
-            }elseif($code == self::FAILURE_STATUS){
-                $this->refreshQRCode();
-            }
-        }
-        return false;
-    }
-
-    public function Login(): ClientToken{
-        $response = $this->client->get($this->checkSigUrl,[
-            'allow_redirects' => false
-        ]);
-        $cookies = $this->getCookies($response);
-        $this->uin = $cookies['uin'];
-        $this->skey = $cookies['skey'];
-
-        $this->getVfwebqq();
-
-        $this->getPsessionid();
-
-        return $this->getClienToken();
-    }
-
-
-    public function getCookies(ResponseInterface $response)
+    /**
+     *
+     * @param ResponseInterface $response
+     * @return array
+     */
+    public function getCookies(ResponseInterface $response): array
     {
         $cookie = $response->getHeader('set-cookie');
         foreach ($cookie as $value) {
@@ -125,7 +97,12 @@ class QQClient
         return $cookies;
     }
 
-    public function getClienToken(): ClientToken{
+    /**
+     *
+     * @return ClientToken
+     */
+    public function getClienToken(): ClientToken
+    {
         $clienToken = new ClientToken();
         $clienToken->setUin($this->uin);
         $clienToken->setCheckSigUrl($this->checkSigUrl);
@@ -136,10 +113,20 @@ class QQClient
         $clienToken->setClientid($this->clientid);
         $clienToken->setPsessionid($this->psessionid);
         $clienToken->setSkey($this->skey);
+        $clienToken->setBkn($this->bkn);
+        $clienToken->setPtwebqq($this->ptwebqq);
+        $clienToken->setHash($this->hash);
+        //CookieJarArray
+        $clienToken->setJarArray($this->jarArray);
         return $clienToken;
     }
 
-    public function setClienToken(ClientToken $clientToken){
+    /**
+     *
+     * @param ClientToken $clientToken
+     */
+    public function setClienToken(ClientToken $clientToken): void
+    {
         $this->uin = $clientToken->getUin();
         $this->checkSigUrl = $clientToken->getCheckSigUrl();
         $this->ptqrtoken = $clientToken->getPtqrtoken();
@@ -149,9 +136,84 @@ class QQClient
         $this->clientid = $clientToken->getClientid();
         $this->psessionid = $clientToken->getPsessionid();
         $this->skey = $clientToken->getSkey();
+        $this->bkn = $clientToken->getBkn();
+        $this->ptwebqq = $clientToken->getPtwebqq();
+        $this->hash = $clientToken->getHash();
+        //CookieJarArray
+        $this->jarArray = $clientToken->getJarArray();
+        $this->jar = self::ArraytoCookieJar($this->jarArray);
     }
 
-    public function getVfwebqq()
+    public function setQRCodePath(string $path = './qrcode.png'): string
+    {
+        return $this->qrcodePath = $path;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getQRCodePath(): string
+    {
+        return $this->qrcodePath;
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function refreshQRCode(): int
+    {
+        $response = $this->client->get(URL::qrcodeURL, [
+            't' => time()
+        ]);
+        $qrcode = $response->getBody();
+        $cookies = $this->getCookies($response);
+        $this->ptqrtoken = EncryptUtils::hash33($cookies['qrsig']);
+        return file_put_contents($this->qrcodePath, $qrcode);
+    }
+
+    /**
+     *
+     * @return int
+     */
+    public function verifyQrCodeStatus(): int
+    {
+        $response = $this->client->get(URL::ptqrloginURL . "&ptqrtoken={$this->ptqrtoken}&action=0-0-" . time());
+        $ptuiCB = MessageUtils::ptuiCBToArray($response->getBody());
+        $code = $ptuiCB['code'];
+        if ($code == self::OK_STATUS) {
+            $this->checkSigUrl = $ptuiCB['link'];
+//            $cookies = $this->getCookies($response);
+//            $this->supertoken = $cookies['supertoken'];
+//            $this->superkey = $cookies['superkey'];
+        }
+        return $code;
+    }
+
+    /**
+     *
+     * @return bool
+     */
+    public function QRLogin(): bool
+    {
+        set_time_limit(0);
+        while (true) {
+            $code = $this->verifyQrCodeStatus();
+            if ($code == self::OK_STATUS) {
+                return true;
+            } elseif ($code == self::FAILURE_STATUS) {
+                $this->refreshQRCode();
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getVfwebqq(): string
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1'
@@ -160,7 +222,16 @@ class QQClient
         return $this->vfwebqq = MessageUtils::getVfwebqq($response->getBody());
     }
 
-    public function getPsessionid()
+    public function getHash(): string
+    {
+        return EncryptUtils::hashUin(substr($this->uin, 1, strlen($this->uin) - 1), $this->ptwebqq);
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getPsessionid(): string
     {
         $options['headers'] = [
             'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
@@ -171,6 +242,45 @@ class QQClient
         $response = $this->client->post(URL::login2URL, $options);
         return $this->psessionid = MessageUtils::getPsessionid($response->getBody());
     }
+
+    /**
+     *
+     * @return ClientToken
+     */
+    public function Login(): ClientToken
+    {
+        $response = $this->client->get($this->checkSigUrl, [
+            'allow_redirects' => false
+        ]);
+        $cookies = $this->getCookies($response);
+        $this->ptwebqq = array_key_exists('ptwebqq', $cookies) ? $cookies['ptwebqq'] : '';
+        $this->uin = array_key_exists('uin', $cookies) ? $cookies['uin'] : '';
+        $this->skey = array_key_exists('skey', $cookies) ? $cookies['skey'] : '';
+        $this->bkn = EncryptUtils::getBkn($this->bkn);
+        $this->hash = $this->getHash();
+        $this->getVfwebqq();
+        $this->getPsessionid();
+
+        $this->jarArray = $this->CookieJartoArray();
+        $this->jar = self::ArraytoCookieJar($this->jarArray);
+
+        return $this->getClienToken();
+    }
+
+    public function getFriendsList()
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['form_params'] = [
+            'r' => '{"vfwebqq":"' . $this->vfwebqq . '","hash":"' . $this->hash . '"}'
+        ];
+        $options['cookies'] = $this->jar;
+        $client = new Client();
+        $response = $client->post(URL::getUserFriendsURL, $options);
+        echo $response->getBody();
+    }
+
 
 
 }

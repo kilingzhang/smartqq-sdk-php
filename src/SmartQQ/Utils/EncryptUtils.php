@@ -11,6 +11,12 @@ namespace kilingzhang\SmartQQ\Utils;
 
 class EncryptUtils
 {
+    public static function time33($t)
+    {
+        for ($e = 0, $i = 0, $n = strlen($t); $i < $n; $i++)
+            $e = (33 * $e + static::charCodeAt($t, $i)) % 4294967296;
+        return $e;
+    }
 
     public static function hash33($t)
     {
@@ -93,5 +99,47 @@ class EncryptUtils
             $buf .= ($hex[$bytes[$i] & 15]);
         }
         return $buf;
+    }
+
+    /**
+     * 根据skey计算出bkn的值
+     * @param string $skey
+     * @return int
+     */
+    public static function getBkn($skey)
+    {
+        $hash = 5381;
+        for ($i = 0; $i < strlen($skey); ++$i) {
+            $hash += ($hash << 5) + self::utf8_unicode($skey[$i]);
+        }
+        return $hash & 0x7fffffff;
+    }
+
+    /**
+     * 用于bkn的计算
+     * @param number|string $c
+     * @return number|boolean
+     */
+    public static function utf8_unicode($c)
+    {
+        switch (strlen($c)) {
+            case 1:
+                return ord($c);
+            case 2:
+                $n = (ord($c[0]) & 0x3f) << 6;
+                $n += ord($c[1]) & 0x3f;
+                return $n;
+            case 3:
+                $n = (ord($c[0]) & 0x1f) << 12;
+                $n += (ord($c[1]) & 0x3f) << 6;
+                $n += ord($c[2]) & 0x3f;
+                return $n;
+            case 4:
+                $n = (ord($c[0]) & 0x0f) << 18;
+                $n += (ord($c[1]) & 0x3f) << 12;
+                $n += (ord($c[2]) & 0x3f) << 6;
+                $n += ord($c[3]) & 0x3f;
+                return $n;
+        }
     }
 }

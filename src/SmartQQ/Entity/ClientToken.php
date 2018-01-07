@@ -9,32 +9,58 @@
 namespace kilingzhang\SmartQQ\Entity;
 
 
+use GuzzleHttp\Cookie\CookieJar;
+
 class ClientToken
 {
-    private $ptqrtoken;
-    private $checkSigUrl;
-    private $qrcodePath;
+//    切记不要打开注释
+//    private $ptqrtoken;
+//    private $checkSigUrl;
+//    private $qrcodePath;
+//
+//    private $uin;
+//    private $skey;
+//    private $bkn;
+//    private $clientid = 53999199;
+//    private $vfwebqq;
+//    private $psessionid;
+//    private $ptwebqq;
+//    private $hash;
+//    private $jarArray;
 
-    private $uin;
-    private $skey;
-    private $clientid = 53999199;
-    private $vfwebqq;
-    private $psessionid;
 
-    /**
-     * @return mixed
-     */
-    public function getUin()
+
+    private $clientToken;
+
+
+
+
+    public function __get($name)
     {
-        return $this->uin;
+        if (array_key_exists($name, $this->clientToken)) {
+            return $this->clientToken[$name];
+        }
+        return null;
     }
 
-    /**
-     * @param mixed $uin
-     */
-    public function setUin($uin)
+    public function __set($name, $value)
     {
-        $this->uin = $uin;
+        $this->clientToken[$name] = $value;
+    }
+
+    public function __toString() {
+        $json = \GuzzleHttp\json_encode($this->clientToken,JSON_UNESCAPED_UNICODE);
+        return $json;
+    }
+
+    public static function toClientToken($json):ClientToken
+    {
+        $client = \GuzzleHttp\json_decode($json,true);
+        $clientToken = new ClientToken();
+        foreach ($client as $key => $value){
+            $clientToken->$key = $value;
+        }
+        return $clientToken;
     }
 
     /**
@@ -88,6 +114,22 @@ class ClientToken
     /**
      * @return mixed
      */
+    public function getUin()
+    {
+        return $this->uin;
+    }
+
+    /**
+     * @param mixed $uin
+     */
+    public function setUin($uin)
+    {
+        $this->uin = $uin;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getSkey()
     {
         return $this->skey;
@@ -102,9 +144,25 @@ class ClientToken
     }
 
     /**
+     * @return mixed
+     */
+    public function getBkn()
+    {
+        return $this->bkn;
+    }
+
+    /**
+     * @param mixed $bkn
+     */
+    public function setBkn($bkn)
+    {
+        $this->bkn = $bkn;
+    }
+
+    /**
      * @return int
      */
-    public function getClientid()
+    public function getClientid(): int
     {
         return $this->clientid;
     }
@@ -112,7 +170,7 @@ class ClientToken
     /**
      * @param int $clientid
      */
-    public function setClientid($clientid)
+    public function setClientid(int $clientid)
     {
         $this->clientid = $clientid;
     }
@@ -148,6 +206,60 @@ class ClientToken
     {
         $this->psessionid = $psessionid;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPtwebqq()
+    {
+        return $this->ptwebqq;
+    }
+
+    /**
+     * @param mixed $ptwebqq
+     */
+    public function setPtwebqq($ptwebqq)
+    {
+        $this->ptwebqq = $ptwebqq;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param mixed $hash
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJarArray()
+    {
+        return $this->jarArray;
+    }
+
+    /**
+     * @param mixed $jar
+     */
+    public function setJarArray($jarArray)
+    {
+        $this->jarArray = $jarArray;
+    }
+
+
+
+
+
+
 
 
 }
