@@ -61,7 +61,7 @@ class QQClient
 
     }
 
-    public  function CookieJartoArray()
+    public function CookieJartoArray()
     {
         $cookieJar = $this->client->getConfig('cookies');
         return $cookieJar->toArray();
@@ -267,6 +267,8 @@ class QQClient
         return $this->getClienToken();
     }
 
+
+
     public function getFriendsList()
     {
         $options['headers'] = [
@@ -276,11 +278,89 @@ class QQClient
             'r' => '{"vfwebqq":"' . $this->vfwebqq . '","hash":"' . $this->hash . '"}'
         ];
         $options['cookies'] = $this->jar;
-        $client = new Client();
-        $response = $client->post(URL::getUserFriendsURL, $options);
+        $response = $this->client->post(URL::getUserFriendsURL, $options);
+        //TODO change echo to return
         echo $response->getBody();
     }
 
+    public function getGroupNameList()
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['form_params'] = [
+            'r' => '{"vfwebqq":"' . $this->vfwebqq . '","hash":"' . $this->hash . '"}'
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->post(URL::getGroupNameListURL, $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
 
+    public function getDiscusList()
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->get(URL::getDiscusListURL . "?clientid=53999199&psessionid={$this->psessionid}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function getOnlineBuddies()
+    {
+        $options['headers'] = [
+            'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->get(URL::getOnlineBuddiesURL . "?vfwebqq={$this->vfwebqq}&clientid=53999199&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function getRecentList()
+    {
+        $options['headers'] = [
+            'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
+        ];
+        $options['form_params'] = [
+            'r' => '{"vfwebqq":"' . $this->vfwebqq . '","clientid":53999199,"psessionid":"' . $this->psessionid . '"}'
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->post(URL::getRecentListURL, $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function getSelfInfo()
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->get(URL::getSelfInfoURL . "?t=" . Utils::getMillisecond(), $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function pollMessage(PollMsgInterface $pollMsg){
+        set_time_limit(0);
+        $options['headers'] = [
+            'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
+        ];
+        $options['form_params'] = [
+            'r' => '{"ptwebqq":"","clientid":53999199,"psessionid":"'. $this->psessionid .'","key":""}'
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->post(URL::pollURL, $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function test()
+    {
+        $this->pollMessage(new PollMessageEvent());
+    }
 
 }
