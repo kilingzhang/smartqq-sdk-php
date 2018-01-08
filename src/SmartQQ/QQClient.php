@@ -10,6 +10,8 @@ namespace kilingzhang\SmartQQ;
 
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SetCookie;
+use kilingzhang\SmartQQ\Entity\Message;
+use kilingzhang\SmartQQ\Exception\InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Client;
 use kilingzhang\SmartQQ\Entity\ClientToken;
@@ -33,6 +35,7 @@ class QQClient
     private $client;
     private $qrcodePath;
     private $checkSigUrl;
+
 
     private $ptqrtoken;
     private $uin;
@@ -355,12 +358,49 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->post(URL::pollURL, $options);
         //TODO change echo to return
-        echo $response->getBody();
+        $responseMsg = $response->getBody();
+        $message = new Message($responseMsg);
+        if($message->retcode != 0){
+            throw new InvalidArgumentException('login out...');
+        }
+        $pollType = $message->result->pollType;
+        switch ($pollType){
+            case 'message':
+                $pollMsg->FreindMessage($responseMsg);
+                break;
+            case 'group_message':
+                $pollMsg->GroupMessage($responseMsg);
+                break;
+            case 'discu_message':
+                $pollMsg->DiscusMessage($responseMsg);
+                break;
+
+        }
     }
 
     public function test()
     {
-        $this->pollMessage(new PollMessageEvent());
+//        $this->pollMessage(new PollMessageEvent());
+        $responseMsg = '{"result":[{"poll_type":"message","value":{"content":[["font",{"color":"000000","name":"微软雅黑","size":10,"style":[0,0,0]}],"尴尬","😅","。。",["face",0],"123213123123 测试下 ",["face",0]," ","😅"],"from_uin":1353693508,"msg_id":30765,"msg_type":1,"time":1515399317,"to_uin":1508758325}}],"retcode":0}';
+        $message = new Message();
+        $message->setMsgObj($responseMsg);
+        if($message->retcode != 0){
+            throw new InvalidArgumentException('login out...');
+        }
+        $pollMsg = new PollMessageEvent();
+        $pollType = $message->result[0]->poll_type;
+        switch ($pollType){
+            case 'message':
+                $pollMsg->FreindMessage($message);
+                break;
+            case 'group_message':
+                $pollMsg->GroupMessage($message);
+                break;
+            case 'discu_message':
+                $pollMsg->DiscusMessage($message);
+                break;
+
+        }
     }
 
 }
