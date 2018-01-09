@@ -9,11 +9,11 @@
 namespace kilingzhang\SmartQQ;
 
 
-use kilingzhang\SmartQQ\Entity\Message;
+use kilingzhang\SmartQQ\Entity\ResponseMessage;
 
 interface PollMsgInterface
 {
-    public function FreindMessage(Message $message);
-    public function GroupMessage(Message $message);
-    public function DiscusMessage(Message $message);
+    public function FreindMessage(ResponseMessage $message);
+    public function GroupMessage(ResponseMessage $message);
+    public function DiscusMessage(ResponseMessage $message);
 }

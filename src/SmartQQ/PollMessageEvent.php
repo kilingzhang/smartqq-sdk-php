@@ -8,25 +8,25 @@
 
 namespace kilingzhang\SmartQQ;
 
-use kilingzhang\SmartQQ\Entity\Message;
+use kilingzhang\SmartQQ\Entity\ResponseMessage;
 use kilingzhang\SmartQQ\PollMsgInterface;
 
 class PollMessageEvent implements PollMsgInterface
 {
 
-    public function FreindMessage(Message $message)
+    public function FreindMessage(ResponseMessage $message)
     {
         // TODO: Implement FreindMessage() method.
         echo 'FreindMessage recived '. $message->content .' from : ' . $message->fromUin;
     }
 
-    public function GroupMessage(Message $message)
+    public function GroupMessage(ResponseMessage $message)
     {
         // TODO: Implement GroupMessage() method.
         echo 'GroupMessage recived '. $message->content .' from : ' . $message->groupCode;
     }
 
-    public function DiscusMessage(Message $message)
+    public function DiscusMessage(ResponseMessage $message)
     {
         // TODO: Implement DiscusMessage() method.
         echo 'DiscusMessage recived '. $message->content .' from : ' . $message->did;

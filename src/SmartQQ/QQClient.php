@@ -10,8 +10,11 @@ namespace kilingzhang\SmartQQ;
 
 use GuzzleHttp\Cookie\CookieJar;
 use GuzzleHttp\Cookie\SetCookie;
-use kilingzhang\SmartQQ\Entity\Message;
+use kilingzhang\SmartQQ\Entity\Font;
+use kilingzhang\SmartQQ\Entity\ResponseMessage;
+use kilingzhang\SmartQQ\Entity\SendMessage;
 use kilingzhang\SmartQQ\Exception\InvalidArgumentException;
+use kilingzhang\SmartQQ\Utils\FaceUtils;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Client;
 use kilingzhang\SmartQQ\Entity\ClientToken;
@@ -347,25 +350,71 @@ class QQClient
         echo $response->getBody();
     }
 
-    public function pollMessage(PollMsgInterface $pollMsg){
+    public function getFriendInfoByUin($uin)
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->get(URL::getFriendInfoURL . "?tuin={$uin}&vfwebqq={$this->vfwebqq}&clientid={$this->clientid}&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function getGroupInfoByGcode($gcode)
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->get(URL::getGroupInfoURL . "?gcode={$gcode}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function getDiscusInfoByDid($did)
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->get(URL::getDiscusInfoURL . "?did={$did}&vfwebqq={$this->vfwebqq}&clientid={$this->clientid}&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function getSingleLongNickByUin($uin)
+    {
+        $options['headers'] = [
+            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->get(URL::getSingleLongNickURL . "?tuin={$uin}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
+        //TODO change echo to return
+        echo $response->getBody();
+    }
+
+    public function pollMessage(PollMsgInterface $pollMsg)
+    {
         set_time_limit(0);
         $options['headers'] = [
             'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
         ];
         $options['form_params'] = [
-            'r' => '{"ptwebqq":"","clientid":53999199,"psessionid":"'. $this->psessionid .'","key":""}'
+            'r' => '{"ptwebqq":"","clientid":53999199,"psessionid":"' . $this->psessionid . '","key":""}'
         ];
         $options['cookies'] = $this->jar;
         $response = $this->client->post(URL::pollURL, $options);
-        //TODO change echo to return
         $responseMsg = $response->getBody();
-        $message = new Message();
-        $message->setMsgObj($responseMsg);
-        if($message->retcode != 0){
+        $message = new ResponseMessage();
+        $message->setResponseMsgObj($responseMsg);
+        if ($message->retcode != 0) {
+            //TODO Login out
+            unlink('./ClientToken.json');
             throw new InvalidArgumentException('login out...');
         }
         $pollType = $message->pollType;
-        switch ($pollType){
+        switch ($pollType) {
             case 'message':
                 $pollMsg->FreindMessage($message);
                 break;
@@ -377,12 +426,69 @@ class QQClient
                 break;
 
         }
+        //TODO change echo to return
     }
+
+    public function sendMsg($type, $to, $msg, Font $font)
+    {
+        $message = new SendMessage();
+        $message->setMessage($msg);
+        $font = new Font();
+        $message->setFont($font);
+        switch ($type) {
+            case "private":
+                $url = URL::sendPrivateMessageURL;
+                $param = '{"to":' . $to . ',"content":"[' . $message->getContent() . ']","face":594,"clientid":53999199,"msg_id":' . Utils::makeMsgId() . ',"psessionid":"' . $this->psessionid . '"}';
+                break;
+            case "group":
+                $url = URL::sendGroupMessageURL;
+                $param = '{"group_uin":' . $to . ',"content":"[' . $message->getContent() . ']","face":594,"clientid":53999199,"msg_id":' . Utils::makeMsgId() . ',"psessionid":"' . $this->psessionid . '"}';
+                break;
+            case "discus":
+                $url = URL::sendDiscusMessageURL;
+                $param = '{"did":' . $to . ',"content":"[' . $message->getContent() . ']","face":594,"clientid":53999199,"msg_id":' . Utils::makeMsgId() . ',"psessionid":"' . $this->psessionid . '"}';
+                break;
+        }
+
+        $options['headers'] = [
+            'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
+        ];
+        $options['form_params'] = [
+            'r' => $param
+        ];
+        $options['cookies'] = $this->jar;
+        $response = $this->client->post($url, $options);
+//        //TODO change echo to return
+        $responseMsg = $response->getBody();
+        echo $responseMsg;
+
+    }
+
+    public function sendPrivateMsg($to, $msg)
+    {
+        //TODO change echo to return
+        $this->sendMsg('private', $to, $msg, new Font());
+    }
+
+    public function sendGroupMsg($to, $msg)
+    {
+        //TODO change echo to return
+        $this->sendMsg('group', $to, $msg, new Font());
+    }
+
+    public function sendDiscusMsg($to, $msg)
+    {
+        //TODO change echo to return
+        $this->sendMsg('discus', $to, $msg, new Font());
+    }
+
 
     public function test()
     {
-        $this->pollMessage(new PollMessageEvent());
-
+//        $this->pollMessage(new PollMessageEvent());
+//        FaceUtils::formFaces("test 2333[QQ:face,id=0]21321\n[QQ:face,id=0]");
+//        $this->getFriendsList();
+//        $this->sendPrivateMsg(3676045751, '在看亮剑');
     }
 
 }
