@@ -17,18 +17,18 @@ class PollMessageEvent implements PollMsgInterface
     public function FreindMessage(Message $message)
     {
         // TODO: Implement FreindMessage() method.
-        echo 'FreindMessage recived from : ' . $message->form_uin;
+        echo 'FreindMessage recived '. $message->content .' from : ' . $message->fromUin;
     }
 
     public function GroupMessage(Message $message)
     {
         // TODO: Implement GroupMessage() method.
-        echo 'GroupMessage recived from : ' . $message->group_code;
+        echo 'GroupMessage recived '. $message->content .' from : ' . $message->groupCode;
     }
 
     public function DiscusMessage(Message $message)
     {
         // TODO: Implement DiscusMessage() method.
-        echo 'DiscusMessage recived from : ' . $message->did;
+        echo 'DiscusMessage recived '. $message->content .' from : ' . $message->did;
     }
 }
