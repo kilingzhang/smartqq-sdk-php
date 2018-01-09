@@ -375,7 +375,7 @@ class QQClient
     public function getDiscusInfoByDid($did)
     {
         $options['headers'] = [
-            'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
+            'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
         ];
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getDiscusInfoURL . "?did={$did}&vfwebqq={$this->vfwebqq}&clientid={$this->clientid}&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
@@ -464,30 +464,32 @@ class QQClient
 
     }
 
-    public function sendPrivateMsg($to, $msg)
+    public function sendPrivateMsg($uin, $msg)
     {
         //TODO change echo to return
         $this->sendMsg('private', $to, $msg, new Font());
     }
 
-    public function sendGroupMsg($to, $msg)
+    public function sendGroupMsg($gid, $msg)
     {
         //TODO change echo to return
         $this->sendMsg('group', $to, $msg, new Font());
     }
 
-    public function sendDiscusMsg($to, $msg)
+    public function sendDiscusMsg($did, $msg)
     {
         //TODO change echo to return
         $this->sendMsg('discus', $to, $msg, new Font());
     }
 
 
+
     public function test()
     {
 //        $this->pollMessage(new PollMessageEvent());
 //        FaceUtils::formFaces("test 2333[QQ:face,id=0]21321\n[QQ:face,id=0]");
-//        $this->getFriendsList();
+//        $this->getDiscusList();
+//        $this->getDiscusInfoByDid(3699650892);
 //        $this->sendPrivateMsg(3676045751, '在看亮剑');
     }
 
