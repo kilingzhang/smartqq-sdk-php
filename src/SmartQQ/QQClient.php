@@ -13,7 +13,7 @@ use GuzzleHttp\Cookie\SetCookie;
 use kilingzhang\SmartQQ\Entity\Font;
 use kilingzhang\SmartQQ\Entity\ResponseMessage;
 use kilingzhang\SmartQQ\Entity\SendMessage;
-use kilingzhang\SmartQQ\Exception\InvalidArgumentException;
+use kilingzhang\SmartQQ\Interfaces\PollMsgInterface;
 use kilingzhang\SmartQQ\Utils\FaceUtils;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Client;
@@ -409,9 +409,7 @@ class QQClient
         $message = new ResponseMessage();
         $message->setResponseMsgObj($responseMsg);
         if ($message->retcode != 0) {
-            //TODO Login out
-            unlink('./ClientToken.json');
-            throw new InvalidArgumentException('login out...');
+            $pollMsg->ErrorRetcode($message->retcode);
         }
         $pollType = $message->pollType;
         switch ($pollType) {
@@ -486,8 +484,8 @@ class QQClient
 
     public function test()
     {
-//        $this->pollMessage(new PollMessageEvent());
-//        FaceUtils::formFaces("test 2333[QQ:face,id=0]21321\n[QQ:face,id=0]");
+        $this->pollMessage(new PollMessageEvent());
+//        echo FaceUtils::formFaces("12312321[QQ:face,id=10]3213123123test 2333[QQ:face,id=10][QQ:face,id=0][QQ:face,id=20][QQ:face,id=30]23332333[QQ:face,id=10]");
 //        $this->getDiscusList();
 //        $this->getDiscusInfoByDid(3699650892);
 //        $this->sendPrivateMsg(3676045751, '在看亮剑');

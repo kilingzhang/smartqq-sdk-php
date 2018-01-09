@@ -13,12 +13,20 @@ class FaceUtils
 {
     /**
      *  [QQ:face,id=0-170] to ["face",0-170]
-     *  test 2333[QQ:face,id=0]21321\n[QQ:face,id=0]
      */
     public static function formFaces($msg)
     {
-//        $pre = preg_split('/(\[QQ:face,id=(\d+)\])/',$msg);
-        preg_match_all('/(.*?)(\[QQ:face,id=(\d+)\])|(\[QQ:face,id=(\d+)\])(.*?)/',$msg,$pre);
-        return \GuzzleHttp\json_encode($msg,JSON_UNESCAPED_UNICODE);
+        $message = array();
+        preg_match_all('/\[QQ:face,id=(\d+)\]/', $msg, $pro);
+        $msg = preg_split('/\[QQ:face,id=(\d+)\]/', $msg);
+        for ($i = 0; $i < ($n = count($pro[0]) > count($msg) ? count($pro[0]) : count($msg)); $i++) {
+           if(isset($msg[$i])){
+               array_push($message, $msg[$i]);
+           }
+            if(!is_null($pro[1][$i])){
+                array_push($message, '["face",' . $pro[1][$i] . ']');
+            }
+        }
+        return \GuzzleHttp\json_encode($message, JSON_UNESCAPED_UNICODE);
     }
 }

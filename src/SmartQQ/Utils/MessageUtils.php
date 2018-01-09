@@ -10,7 +10,7 @@ namespace kilingzhang\SmartQQ\Utils;
 
 
 
-use kilingzhang\SmartQQ\Exception\InvalidArgumentException;
+use kilingzhang\SmartQQ\Exception\RetcodeException;
 
 class MessageUtils
 {
@@ -51,7 +51,7 @@ class MessageUtils
         if($data['retcode'] == 0){
             return $data['result']['vfwebqq'];
         }
-        throw new InvalidArgumentException("Login Out...");
+        throw new RetcodeException("Login Out...");
     }
 
     public static function getPsessionid($getBody)
@@ -78,6 +78,6 @@ class MessageUtils
             return $data['result']['psessionid'];
         }
         return $getBody;
-//        throw new InvalidArgumentException("Login Out...");
+//        throw new RetcodeException("Login Out...");
     }
 }
