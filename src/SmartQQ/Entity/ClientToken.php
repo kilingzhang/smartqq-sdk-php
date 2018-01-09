@@ -10,6 +10,8 @@ namespace kilingzhang\SmartQQ\Entity;
 
 
 use GuzzleHttp\Cookie\CookieJar;
+use kilingzhang\SmartQQ\FileClientToken;
+use kilingzhang\SmartQQ\Interfaces\ClientTokenInterface;
 
 class ClientToken
 {
@@ -31,8 +33,15 @@ class ClientToken
 
 
     private $clientToken;
+    private $clientTokenInterface;
 
-
+    public function __construct(ClientTokenInterface $clientTokenInterface = null)
+    {
+        if($clientTokenInterface == null){
+            $clientTokenInterface = new FileClientToken();
+        }
+        $this->clientTokenInterface = $clientTokenInterface;
+    }
 
 
     public function __get($name)
@@ -53,6 +62,10 @@ class ClientToken
         return $json;
     }
 
+    /**
+     * @param $json|json
+     * @return ClientToken
+     */
     public static function toClientToken($json):ClientToken
     {
         $client = \GuzzleHttp\json_decode($json,true);
@@ -256,7 +269,32 @@ class ClientToken
     }
 
 
+    /**
+     * @param FileClientToken|ClientTokenInterface $clientTokenInterface
+     */
+    public function setClientTokenInterface($clientTokenInterface)
+    {
+        $this->clientTokenInterface = $clientTokenInterface;
+    }
 
+
+
+
+    public function save(){
+        return $this->clientTokenInterface->save($this);
+    }
+
+    public function delete(){
+        return $this->clientTokenInterface->delete();
+    }
+
+    public function getClientTokenJson(){
+        return $this->clientTokenInterface->getClientTokenJson();
+    }
+
+    public function isEmpty(){
+        return $this->clientTokenInterface->isEmpty();
+    }
 
 
 

@@ -409,7 +409,7 @@ class QQClient
         $message = new ResponseMessage();
         $message->setResponseMsgObj($responseMsg);
         if ($message->retcode != 0) {
-            $pollMsg->ErrorRetcode($message->retcode);
+            $pollMsg->ErrorRetcode($message->retcode,$this->getClienToken());
         }
         $pollType = $message->pollType;
         switch ($pollType) {

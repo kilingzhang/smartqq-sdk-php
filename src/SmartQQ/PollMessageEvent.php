@@ -8,6 +8,7 @@
 
 namespace kilingzhang\SmartQQ;
 
+use kilingzhang\SmartQQ\Entity\ClientToken;
 use kilingzhang\SmartQQ\Entity\ResponseMessage;
 use kilingzhang\SmartQQ\Exception\RetcodeException;
 use kilingzhang\SmartQQ\Interfaces\PollMsgInterface;
@@ -33,18 +34,19 @@ class PollMessageEvent implements PollMsgInterface
         echo 'DiscusMessage recived '. $message->content .' from : ' . $message->did;
     }
 
-    public function ErrorRetcode($retcode)
+
+    public function ErrorRetcode($retcode, ClientToken $clientToken)
     {
         // TODO: Implement ErrorRetcode() method.
         switch ($retcode){
             case 103:
                 //TODO Login out
-                unlink('./ClientToken.json');
+                $clientToken->delete();
                 throw new RetcodeException('103  http://w.qq.com');
                 break;
             default:
                 //TODO Login out
-                unlink('./ClientToken.json');
+                $clientToken->delete();
                 throw new RetcodeException('login out...');
                 break;
         }
