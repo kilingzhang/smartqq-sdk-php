@@ -9,7 +9,7 @@
 namespace kilingzhang\SmartQQ;
 
 use kilingzhang\SmartQQ\Entity\ResponseMessage;
-use kilingzhang\SmartQQ\PollMsgInterface;
+use kilingzhang\SmartQQ\Interfaces\PollMsgInterface;
 
 class PollMessageEvent implements PollMsgInterface
 {

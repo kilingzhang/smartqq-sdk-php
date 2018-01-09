@@ -6,7 +6,7 @@
  * Time: 下午8:09
  */
 
-namespace kilingzhang\SmartQQ;
+namespace kilingzhang\SmartQQ\Interfaces;
 
 
 use kilingzhang\SmartQQ\Entity\ResponseMessage;
