@@ -55,6 +55,8 @@ class QQClient
     private $jarArray;
     private $jar;
 
+    private $rspResultInterface;
+
     public function __construct(ClientToken $clientToken = null)
     {
         if ($clientToken != null) {
@@ -67,13 +69,13 @@ class QQClient
 
     }
 
-    public function CookieJartoArray()
+    public function CookieJartoArray():array
     {
         $cookieJar = $this->client->getConfig('cookies');
         return $cookieJar->toArray();
     }
 
-    public static function ArraytoCookieJar(array $cookies)
+    public static function ArraytoCookieJar(array $cookies):CookieJar
     {
         $jar = new CookieJar();
         foreach ($cookies as $value) {
@@ -275,7 +277,7 @@ class QQClient
 
 
 
-    public function getFriendsList()
+    public function getFriendsList():array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
@@ -285,11 +287,10 @@ class QQClient
         ];
         $options['cookies'] = $this->jar;
         $response = $this->client->post(URL::getUserFriendsURL, $options);
-        //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getGroupNameList()
+    public function getGroupNameList():array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
@@ -300,10 +301,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->post(URL::getGroupNameListURL, $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getDiscusList()
+    public function getDiscusList():array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
@@ -311,10 +312,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getDiscusListURL . "?clientid=53999199&psessionid={$this->psessionid}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getOnlineBuddies()
+    public function getOnlineBuddies():array
     {
         $options['headers'] = [
             'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
@@ -322,10 +323,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getOnlineBuddiesURL . "?vfwebqq={$this->vfwebqq}&clientid=53999199&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getRecentList()
+    public function getRecentList():array
     {
         $options['headers'] = [
             'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
@@ -336,10 +337,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->post(URL::getRecentListURL, $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getSelfInfo()
+    public function getSelfInfo():array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
@@ -347,10 +348,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getSelfInfoURL . "?t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getFriendInfoByUin($uin)
+    public function getFriendInfoByUin($uin):array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
@@ -358,10 +359,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getFriendInfoURL . "?tuin={$uin}&vfwebqq={$this->vfwebqq}&clientid={$this->clientid}&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getGroupInfoByGcode($gcode)
+    public function getGroupInfoByGcode($gcode):array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
@@ -369,10 +370,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getGroupInfoURL . "?gcode={$gcode}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getDiscusInfoByDid($did)
+    public function getDiscusInfoByDid($did):array
     {
         $options['headers'] = [
             'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
@@ -380,10 +381,10 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getDiscusInfoURL . "?did={$did}&vfwebqq={$this->vfwebqq}&clientid={$this->clientid}&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getSingleLongNickByUin($uin)
+    public function getSingleLongNickByUin($uin):array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
@@ -391,7 +392,7 @@ class QQClient
         $options['cookies'] = $this->jar;
         $response = $this->client->get(URL::getSingleLongNickURL . "?tuin={$uin}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
-        echo $response->getBody();
+        return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
     public function pollMessage(PollMsgInterface $pollMsg)
@@ -427,7 +428,7 @@ class QQClient
         //TODO change echo to return
     }
 
-    public function sendMsg($type, $to, $msg, Font $font)
+    public function sendMsg($type, $to, $msg, Font $font):array
     {
         $message = new SendMessage();
         $message->setMessage($msg);
@@ -456,28 +457,27 @@ class QQClient
         ];
         $options['cookies'] = $this->jar;
         $response = $this->client->post($url, $options);
-//        //TODO change echo to return
-        $responseMsg = $response->getBody();
-        echo $responseMsg;
+        //TODO change echo to return
+        return \GuzzleHttp\json_decode($response->getBody(),true);
 
     }
 
-    public function sendPrivateMsg($uin, $msg)
+    public function sendPrivateMsg($uin, $msg):array
     {
         //TODO change echo to return
-        $this->sendMsg('private', $to, $msg, new Font());
+        return $this->sendMsg('private', $uin, $msg, new Font());
     }
 
-    public function sendGroupMsg($gid, $msg)
+    public function sendGroupMsg($gid, $msg):array
     {
         //TODO change echo to return
-        $this->sendMsg('group', $to, $msg, new Font());
+        return $this->sendMsg('group', $gid, $msg, new Font());
     }
 
-    public function sendDiscusMsg($did, $msg)
+    public function sendDiscusMsg($did, $msg):array
     {
         //TODO change echo to return
-        $this->sendMsg('discus', $to, $msg, new Font());
+        return $this->sendMsg('discus', $did, $msg, new Font());
     }
 
 

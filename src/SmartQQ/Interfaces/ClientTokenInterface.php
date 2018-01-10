@@ -13,6 +13,6 @@ interface ClientTokenInterface
 {
     public function save($clientToken);
     public function delete();
-    public function getClientTokenJson();
-    public function isEmpty();
+    public function getClientTokenJson():string ;
+    public function isEmpty():bool ;
 }

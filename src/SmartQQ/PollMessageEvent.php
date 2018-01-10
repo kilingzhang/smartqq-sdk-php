@@ -18,26 +18,22 @@ class PollMessageEvent implements PollMsgInterface
 
     public function FreindMessage(ResponseMessage $message)
     {
-        // TODO: Implement FreindMessage() method.
         echo 'FreindMessage recived '. $message->content .' from : ' . $message->fromUin;
     }
 
     public function GroupMessage(ResponseMessage $message)
     {
-        // TODO: Implement GroupMessage() method.
         echo 'GroupMessage recived '. $message->content .' from : ' . $message->groupCode;
     }
 
     public function DiscusMessage(ResponseMessage $message)
     {
-        // TODO: Implement DiscusMessage() method.
         echo 'DiscusMessage recived '. $message->content .' from : ' . $message->did;
     }
 
 
     public function ErrorRetcode($retcode, ClientToken $clientToken)
     {
-        // TODO: Implement ErrorRetcode() method.
         switch ($retcode){
             case 103:
                 //TODO Login out

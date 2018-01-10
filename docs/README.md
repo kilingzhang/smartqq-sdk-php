@@ -1,9 +1,7 @@
 # smartqq-sdk-php
 [![License](https://poser.pugx.org/kilingzhang/smartqq-sdk-php/license)](https://packagist.org/packages/kilingzhang/smartqq-sdk-php) [![Latest Stable Version](https://poser.pugx.org/kilingzhang/smartqq-sdk-php/version)](https://packagist.org/packages/kilingzhang/smartqq-sdk-php) [![Latest Unstable Version](https://poser.pugx.org/kilingzhang/smartqq-sdk-php/v/unstable)](//packagist.org/packages/kilingzhang/smartqq-sdk-php) [![Total Downloads](https://poser.pugx.org/kilingzhang/smartqq-sdk-php/downloads)](https://packagist.org/packages/kilingzhang/smartqq-sdk-php) [![composer.lock available](https://poser.pugx.org/kilingzhang/smartqq-sdk-php/composerlock)](https://packagist.org/packages/kilingzhang/smartqq-sdk-php)
 
-## 安装
-### composer安装
-	composer require kilingzhang/smartqq-sdk-php
+
 ## 功能
  - [x] 获取二维码 
  - [x] 获取二维码验证状态
@@ -25,11 +23,49 @@
  - [x] 获取讨论组详细信息
  - [x] 获取SingleLongNick
 
+## 快速开始
+### composer安装
+	composer require kilingzhang/smartqq-sdk-php
 
-## [文档](http://blog.kilingzhang.com/smartqq-sdk-php)
+### 部署
+	<?php
+    use kilingzhang\SmartQQ\QQClient;
+    use kilingzhang\SmartQQ\Entity\ClientToken;
+
+    include __DIR__ . '/vendor/autoload.php';
+	//初始化QQClient,后续讲基于此会话调用各种方法
+    $QQ = new QQClient();
+    //设置二维码保存路径
+    $QQ->setQRCodePath('./qrcode.png');
+    //初始化用户登录令牌
+    $clientToken = new ClientToken();
+    //判断令牌是否为空（有无缓存登录状态）
+    if ($clientToken->isEmpty()) {
+    	//第一次登录
+        $QQ->refreshQRCode();
+        //验证二维码状态
+        if ($QQ->QRlogin()) {
+        	//二次登陆
+            $QQ->Login();
+            //讲用户登录状态信息转换为登录令牌
+            $clientToken = $QQ->getClienToken();
+            //保存登录令牌
+            $clientToken->save();
+        }
+    } else {
+    	//获取已缓存的用户登录令牌
+        $clientToken = ClientToken::toClientToken($clientToken->getClientTokenJson());
+        //根据令牌设置用户会话
+        $QQ->setClienToken($clientToken);
+    }
+    //　专门作为测试使用　内置了一次的Poll事件
+    $QQ->test();
+
+
+
+## [文档]
 [![文档](http://markdown-1252847423.file.myqcloud.com/%E6%B7%B1%E5%BA%A6%E6%88%AA%E5%9B%BE_%E9%80%89%E6%8B%A9%E5%8C%BA%E5%9F%9F_20180110093636.png)
 ](http://blog.kilingzhang.com/smartqq-sdk-php/#/docs)
-
 ## [Demo](https://github.com/kilingzhang/smartqq-demo)
 基于smartqq-sdk-php 写的一个小[Demo](https://github.com/kilingzhang/smartqq-demo)。完成了samrtqq中的所有基本事件操作。算是个入门的demo。后续我会基于此sdk更新一个QQ机器人完整的项目。把之前的[SmartQQRobotByPHP](https://github.com/kilingzhang/SmartQQRobotByPHP)重写一遍。
 
