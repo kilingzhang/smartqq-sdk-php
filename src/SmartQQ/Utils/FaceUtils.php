@@ -20,13 +20,13 @@ class FaceUtils
         preg_match_all('/\[QQ:face,id=(\d+)\]/', $msg, $pro);
         $msg = preg_split('/\[QQ:face,id=(\d+)\]/', $msg);
         for ($i = 0; $i < ($n = count($pro[0]) > count($msg) ? count($pro[0]) : count($msg)); $i++) {
-           if(isset($msg[$i])){
-               array_push($message, $msg[$i]);
-           }
-            if(!is_null($pro[1][$i])){
-                array_push($message, '["face",' . $pro[1][$i] . ']');
+            if (isset($msg[$i])) {
+                array_push($message, $msg[$i]);
+            }
+            if (!is_null($pro[1][$i])) {
+                array_push($message, array("face", (int)$pro[1][$i]));
             }
         }
-        return \GuzzleHttp\json_encode($message, JSON_UNESCAPED_UNICODE);
+        return $message;
     }
 }

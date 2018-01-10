@@ -304,13 +304,13 @@ class QQClient
         return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getDiscusList():array
+    public function getDiscussList():array
     {
         $options['headers'] = [
             'Referer' => 'http://s.web2.qq.com/proxy.html?v=20130916001&callback=1&id=1',
         ];
         $options['cookies'] = $this->jar;
-        $response = $this->client->get(URL::getDiscusListURL . "?clientid=53999199&psessionid={$this->psessionid}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
+        $response = $this->client->get(URL::getDiscussListURL . "?clientid=53999199&psessionid={$this->psessionid}&vfwebqq={$this->vfwebqq}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
         return \GuzzleHttp\json_decode($response->getBody(),true);
     }
@@ -373,13 +373,13 @@ class QQClient
         return \GuzzleHttp\json_decode($response->getBody(),true);
     }
 
-    public function getDiscusInfoByDid($did):array
+    public function getDiscussInfoByDid($did):array
     {
         $options['headers'] = [
             'Referer' => 'http://d1.web2.qq.com/proxy.html?v=20151105001&callback=1&id=2',
         ];
         $options['cookies'] = $this->jar;
-        $response = $this->client->get(URL::getDiscusInfoURL . "?did={$did}&vfwebqq={$this->vfwebqq}&clientid={$this->clientid}&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
+        $response = $this->client->get(URL::getDiscussInfoURL . "?did={$did}&vfwebqq={$this->vfwebqq}&clientid={$this->clientid}&psessionid={$this->psessionid}&t=" . Utils::getMillisecond(), $options);
         //TODO change echo to return
         return \GuzzleHttp\json_decode($response->getBody(),true);
     }
@@ -421,7 +421,7 @@ class QQClient
                 $pollMsg->GroupMessage($message);
                 break;
             case 'discu_message':
-                $pollMsg->DiscusMessage($message);
+                $pollMsg->DiscussMessage($message);
                 break;
 
         }
@@ -437,14 +437,14 @@ class QQClient
         switch ($type) {
             case "private":
                 $url = URL::sendPrivateMessageURL;
-                $param = '{"to":' . $to . ',"content":"[' . $message->getContent() . ']","face":594,"clientid":53999199,"msg_id":' . Utils::makeMsgId() . ',"psessionid":"' . $this->psessionid . '"}';
+                $param = '{"to":' . $to . ',"content":"' . $message->getContent() . '","face":594,"clientid":53999199,"msg_id":' . Utils::makeMsgId() . ',"psessionid":"' . $this->psessionid . '"}';
                 break;
             case "group":
                 $url = URL::sendGroupMessageURL;
                 $param = '{"group_uin":' . $to . ',"content":"[' . $message->getContent() . ']","face":594,"clientid":53999199,"msg_id":' . Utils::makeMsgId() . ',"psessionid":"' . $this->psessionid . '"}';
                 break;
-            case "discus":
-                $url = URL::sendDiscusMessageURL;
+            case "Discuss":
+                $url = URL::sendDiscussMessageURL;
                 $param = '{"did":' . $to . ',"content":"[' . $message->getContent() . ']","face":594,"clientid":53999199,"msg_id":' . Utils::makeMsgId() . ',"psessionid":"' . $this->psessionid . '"}';
                 break;
         }
@@ -474,21 +474,21 @@ class QQClient
         return $this->sendMsg('group', $gid, $msg, new Font());
     }
 
-    public function sendDiscusMsg($did, $msg):array
+    public function sendDiscussMsg($did, $msg):array
     {
         //TODO change echo to return
-        return $this->sendMsg('discus', $did, $msg, new Font());
+        return $this->sendMsg('Discuss', $did, $msg, new Font());
     }
 
 
 
     public function test()
     {
-        $this->pollMessage(new PollMessageEvent());
-//        echo FaceUtils::formFaces("12312321[QQ:face,id=10]3213123123test 2333[QQ:face,id=10][QQ:face,id=0][QQ:face,id=20][QQ:face,id=30]23332333[QQ:face,id=10]");
-//        $this->getDiscusList();
-//        $this->getDiscusInfoByDid(3699650892);
-//        $this->sendPrivateMsg(3676045751, '在看亮剑');
+//        $this->pollMessage(new PollMessageEvent());
+//        echo FaceUtils::formFaces("231231212");
+//        echo \GuzzleHttp\json_encode($this->getFriendsList(),JSON_UNESCAPED_UNICODE);
+//        $this->getDiscussInfoByDid(3699650892);
+//        echo \GuzzleHttp\json_encode($this->sendPrivateMsg(2820122243, '[QQ:face,id=1]在看亮剑'),JSON_UNESCAPED_UNICODE);
     }
 
 }

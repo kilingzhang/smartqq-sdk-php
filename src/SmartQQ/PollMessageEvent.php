@@ -26,9 +26,9 @@ class PollMessageEvent implements PollMsgInterface
         echo 'GroupMessage recived '. $message->content .' from : ' . $message->groupCode;
     }
 
-    public function DiscusMessage(ResponseMessage $message)
+    public function DiscussMessage(ResponseMessage $message)
     {
-        echo 'DiscusMessage recived '. $message->content .' from : ' . $message->did;
+        echo 'DiscussMessage recived '. $message->content .' from : ' . $message->did;
     }
 
 

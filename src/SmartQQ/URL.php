@@ -40,7 +40,7 @@ class URL
      * &vfwebqq=19fc2f1bced2e9df0d364efbd16c1535bb961bafb69c821505dd48935749cf24343ff16dab7fecb2
      * &t=1515240451637
      */
-    const getDiscusListURL = 'http://s.web2.qq.com/api/get_discus_list';
+    const getDiscussListURL = 'http://s.web2.qq.com/api/get_discus_list';
 
     /**
      * GET
@@ -147,7 +147,7 @@ class URL
      *  "psessionid":"8368046764001d636f6e6e7365727665725f77656271714031302e3133332e34312e383400001ad00000066b026e040015808a206d0000000a406172314338344a69526d0000002859185d94e66218548d1ecb1a12513c86126b3afb97a3c2955b1070324790733ddb059ab166de6857"
      *  }
      */
-    const sendDiscusMessageURL = 'http://d1.web2.qq.com/channel/send_discu_msg2';
+    const sendDiscussMessageURL = 'http://d1.web2.qq.com/channel/send_discu_msg2';
 
 
 

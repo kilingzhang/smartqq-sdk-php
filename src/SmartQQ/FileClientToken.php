@@ -15,11 +15,10 @@ use kilingzhang\SmartQQ\Interfaces\ClientTokenInterface;
 class FileClientToken implements ClientTokenInterface
 {
 
-    private $path;
+    private $path = './ClientToken.json';
 
     public function save($clientToken)
     {
-        $this->path = './ClientToken.json';
         return file_put_contents($this->path, $clientToken);
     }
 

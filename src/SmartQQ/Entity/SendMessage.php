@@ -55,9 +55,10 @@ class SendMessage
      */
     public function getContent()
     {
-        $this->content = FaceUtils::formFaces($this->message) .',["font",{"name":"宋体","size":10,"style":[0,0,0],"color":"000000"}]';
-        $this->content = addslashes($this->content);
-        return $this->content;
+        $this->content = FaceUtils::formFaces($this->message);
+        array_push($this->content, \GuzzleHttp\json_decode('["font",{"name":"宋体","size":10,"style":[0,0,0],"color":"000000"}]', true));
+        $this->content = \GuzzleHttp\json_encode($this->content, JSON_UNESCAPED_UNICODE);
+        return addslashes($this->content);
     }
 
     /**
