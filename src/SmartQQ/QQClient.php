@@ -484,11 +484,7 @@ class QQClient
 
     public function test()
     {
-//        $this->pollMessage(new PollMessageEvent());
-//        echo FaceUtils::formFaces("231231212");
-//        echo \GuzzleHttp\json_encode($this->getFriendsList(),JSON_UNESCAPED_UNICODE);
-//        $this->getDiscussInfoByDid(3699650892);
-//        echo \GuzzleHttp\json_encode($this->sendPrivateMsg(2820122243, '[QQ:face,id=1]在看亮剑'),JSON_UNESCAPED_UNICODE);
+        $this->pollMessage(new PollMessageEvent());
     }
 
 }
