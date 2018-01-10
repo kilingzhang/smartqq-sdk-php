@@ -9,6 +9,7 @@
 namespace kilingzhang\SmartQQ;
 
 
+use kilingzhang\SmartQQ\Entity\ClientToken;
 use kilingzhang\SmartQQ\Interfaces\ClientTokenInterface;
 
 class FileClientToken implements ClientTokenInterface
@@ -27,12 +28,12 @@ class FileClientToken implements ClientTokenInterface
         return unlink($this->path);
     }
 
-    public function getClientTokenJson()
+    public function getClientTokenJson():string
     {
         return file_get_contents($this->path);
     }
 
-    public function isEmpty()
+    public function isEmpty():bool
     {
         return !file_exists($this->path);
     }
