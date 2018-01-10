@@ -26,8 +26,9 @@
  - [x] 获取SingleLongNick
 
 
-## 文档
-
+## [文档](http://blog.kilingzhang.com/smartqq-sdk-php)
+[![文档](http://markdown-1252847423.file.myqcloud.com/%E6%B7%B1%E5%BA%A6%E6%88%AA%E5%9B%BE_%E9%80%89%E6%8B%A9%E5%8C%BA%E5%9F%9F_20180110093636.png)
+](http://blog.kilingzhang.com/smartqq-sdk-php/#/docs)
 
 ## [Demo](https://github.com/kilingzhang/smartqq-demo)
 基于smartqq-sdk-php 写的一个小[Demo](https://github.com/kilingzhang/smartqq-demo)。完成了samrtqq中的所有基本事件操作。算是个入门的demo。后续我会基于此sdk更新一个QQ机器人完整的项目。把之前的[SmartQQRobotByPHP](https://github.com/kilingzhang/SmartQQRobotByPHP)重写一遍。

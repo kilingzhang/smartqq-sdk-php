@@ -9,7 +9,9 @@
 </head>
 <body>
 <div id="app"></div>
+<script src="https://unpkg.com/docute/plugins/docsearch.js"></script>
 <script src="https://unpkg.com/docute@3/dist/docute.js"></script>
+<script src="https://unpkg.com/docute-evanyou"></script>
 <script>
     docute.init({
         url: '.',
@@ -28,7 +30,18 @@
                     title: '文档', path: './docs'
                 }
             ]
-        }
+        },
+        plugins: [
+            // docsearch({
+            //     apiKey: '0c6b88f5dc16407c099fab23f7adfe37',
+            //     indexName: 'smartqq-sdk-php',
+            //     // docsearch 允许你把抓取的内容按照 tag 分类
+            //     // 详情请联系 algolia 客服，这里你只需要把你想搜索的 tag 填进来就行了
+            //     tags: [],
+            //     url: 'http://blog.kilingzhang.com/smartqq-sdk-php/#/'
+            // }),
+            evanyou()
+        ]
 
     })
 </script>
